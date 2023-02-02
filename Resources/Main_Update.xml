@@ -1,0 +1,206 @@
+﻿<?xml version="1.0"?>
+	<DBUpdate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	  <SqlCon>Data Source=192.168.200.27;Initial Catalog=wincc-db;User Id=sa;Password=1</SqlCon>
+	  <!--示例-->
+	  <Item>
+		<!--时间-->
+		<Date>2022-10-25</Date>
+		<!--操作人-->
+		<Operator>揭康</Operator>
+		<!--版本 保证可以转换为浮点类型-->
+		<Ver>1.1</Ver>
+		<!--描述-->
+		<Description>添加表bas_camera_info,bas_upload_platform_config,bas_upload_modbusslave_config,修改表bas_indicator_info</Description>
+		<!--执行脚本-->
+		<SQL>
+			DROP TABLE IF EXISTS `bas_camera_info`;
+			CREATE TABLE `bas_camera_info` (
+			`Id` varchar(32) DEFAULT NULL,
+			`Name` varchar(32) CHARACTER SET utf8 DEFAULT NULL,
+			`Ip` varchar(20) DEFAULT NULL,
+			`Port` int(4) DEFAULT NULL,
+			`UserName` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
+			`Password` varchar(20) DEFAULT NULL
+			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+		    DROP TABLE IF EXISTS `bas_upload_modbusslave_config`;
+			CREATE TABLE `bas_upload_modbusslave_config` (
+			`Id` varchar(40) NOT NULL,
+			`PlatformId` varchar(32) DEFAULT NULL,
+			`Addr` varchar(32) DEFAULT NULL,
+			`DataType` varchar(32) DEFAULT NULL,
+			`ReadWrite` varchar(32) DEFAULT NULL,
+			`DevId` varchar(32) DEFAULT NULL,
+			`DevParamId` varchar(32) DEFAULT NULL,
+			`DataValue` varchar(32) DEFAULT NULL,
+			PRIMARY KEY (`Id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			DROP TABLE IF EXISTS `bas_upload_platform_config`;
+			CREATE TABLE `bas_upload_platform_config` (
+			`Id` varchar(50) DEFAULT NULL,
+			`PlatformId` varchar(50) DEFAULT NULL,
+			`Ip` varchar(50) DEFAULT NULL,
+			`Port` varchar(50) DEFAULT NULL,
+			`UserName` varchar(50) DEFAULT NULL,
+			`Password` varchar(50) DEFAULT NULL COMMENT '站点212国标编号',
+			`SerialPortName` varchar(32) DEFAULT NULL,
+			`SerialPortBaudRate` int(10) DEFAULT NULL,
+			`SerialPortDataBits` int(4) DEFAULT NULL COMMENT '上传小数位数',
+			`SerialPortStopBits` int(4) DEFAULT NULL COMMENT '上传实时数据（分钟数据）',
+			`SerialPortParity` int(4) DEFAULT NULL COMMENT '上传小时均值数据',
+			`SlaveId` int(4) DEFAULT NULL COMMENT '上传日均值数据'
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			alter table bas_indicator_info add `Db32SeatNumber` int(4) DEFAULT NULL COMMENT '水文协议因子序号',
+			add `Db32DataDigits` int(4) DEFAULT NULL COMMENT '水文协议因子值总位数',
+			add `Db32DecimalDigits` int(4) DEFAULT NULL COMMENT '水文协议因子值小数位数';
+		</SQL>
+	  </Item>
+		<Item>
+			<!--时间-->
+			<Date>2022-11-02</Date>
+			<!--操作人-->
+			<Operator>揭康</Operator>
+			<!--版本 保证可以转换为浮点类型-->
+			<Ver>1.2</Ver>
+			<!--描述-->
+			<Description>添加表modbus_slave_com,修改表sys_timing_job,bas_upload_platform</Description>
+			<!--执行脚本-->
+			<SQL>
+				DROP TABLE IF EXISTS `modbus_slave_com`;
+				CREATE TABLE `modbus_slave_com` (
+				`SerialPortName` varchar(32) DEFAULT NULL,
+				`SerialPortBaudRate` int(10) DEFAULT NULL,
+				`SerialPortDataBits` int(4) DEFAULT NULL COMMENT '上传小数位数',
+				`SerialPortStopBits` int(4) DEFAULT NULL COMMENT '上传实时数据（分钟数据）',
+				`SerialPortParity` int(4) DEFAULT NULL COMMENT '上传小时均值数据',
+				`SlaveId` int(4) DEFAULT NULL COMMENT '上传日均值数据',
+				`IS_INVALID` int(4) DEFAULT NULL
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+				alter table sys_timing_job add `IsLog` int(1) DEFAULT NULL COMMENT '是否让动作日志入库';
+				alter table bas_upload_platform add `CommonMode` int(4) DEFAULT NULL COMMENT '0:TCP传输 1:串口传输';
+			</SQL>
+		</Item>
+		<Item>
+			<!--时间-->
+			<Date>2022-11-11</Date>
+			<!--操作人-->
+			<Operator>揭康</Operator>
+			<!--版本 保证可以转换为浮点类型-->
+			<Ver>1.3</Ver>
+			<!--描述-->
+			<Description>修改表bas_indicator_info</Description>
+			<!--执行脚本-->
+			<SQL>
+				update bas_indicator_info set ITEM_NAME='流量'  where ITEM_CODE='w00000';
+				update bas_indicator_info set Db32SeatNumber=0,Db32DataDigits=3,Db32DecimalDigits=1 where ITEM_CODE='w01010';
+				update bas_indicator_info set Db32SeatNumber=1,Db32DataDigits=4,Db32DecimalDigits=2 where ITEM_CODE='w01001';
+				update bas_indicator_info set Db32SeatNumber=2,Db32DataDigits=4,Db32DecimalDigits=1 where ITEM_CODE='w01009';
+				update bas_indicator_info set Db32SeatNumber=3,Db32DataDigits=4,Db32DecimalDigits=1 where ITEM_CODE='w01019';
+				update bas_indicator_info set Db32SeatNumber=4,Db32DataDigits=5,Db32DecimalDigits=0 where ITEM_CODE='w01014';
+				update bas_indicator_info set Db32SeatNumber=5,Db32DataDigits=5,Db32DecimalDigits=1 where ITEM_CODE='w88888';
+				update bas_indicator_info set Db32SeatNumber=6,Db32DataDigits=3,Db32DecimalDigits=0 where ITEM_CODE='w01003';
+				update bas_indicator_info set Db32SeatNumber=7,Db32DataDigits=7,Db32DecimalDigits=1 where ITEM_CODE='w01018';
+				update bas_indicator_info set Db32SeatNumber=8,Db32DataDigits=5,Db32DecimalDigits=1 where ITEM_CODE='w01017';
+				update bas_indicator_info set Db32SeatNumber=9,Db32DataDigits=6,Db32DecimalDigits=2 where ITEM_CODE='w21003';
+				update bas_indicator_info set Db32SeatNumber=10,Db32DataDigits=5,Db32DecimalDigits=2 where ITEM_CODE='w21001';
+				update bas_indicator_info set Db32SeatNumber=11,Db32DataDigits=7,Db32DecimalDigits=4 where ITEM_CODE='w20138';
+				update bas_indicator_info set Db32SeatNumber=12,Db32DataDigits=6,Db32DecimalDigits=4 where ITEM_CODE='w20139';
+				update bas_indicator_info set Db32SeatNumber=13,Db32DataDigits=5,Db32DecimalDigits=2 where ITEM_CODE='w21017';
+				update bas_indicator_info set Db32SeatNumber=14,Db32DataDigits=7,Db32DecimalDigits=5 where ITEM_CODE='w20140';
+				update bas_indicator_info set Db32SeatNumber=15,Db32DataDigits=7,Db32DecimalDigits=5 where ITEM_CODE='w20141';
+				update bas_indicator_info set Db32SeatNumber=16,Db32DataDigits=7,Db32DecimalDigits=5 where ITEM_CODE='w20142';
+				update bas_indicator_info set Db32SeatNumber=17,Db32DataDigits=7,Db32DecimalDigits=5 where ITEM_CODE='w20143';
+				update bas_indicator_info set Db32SeatNumber=18,Db32DataDigits=5,Db32DecimalDigits=3 where ITEM_CODE='w20117';
+				update bas_indicator_info set Db32SeatNumber=19,Db32DataDigits=7,Db32DecimalDigits=5 where ITEM_CODE='w20144';
+				update bas_indicator_info set Db32SeatNumber=20,Db32DataDigits=5,Db32DecimalDigits=3 where ITEM_CODE='w21016';
+				update bas_indicator_info set Db32SeatNumber=21,Db32DataDigits=5,Db32DecimalDigits=3 where ITEM_CODE='w23002';
+				update bas_indicator_info set Db32SeatNumber=23,Db32DataDigits=5,Db32DecimalDigits=3 where ITEM_CODE='w21019';
+				update bas_indicator_info set Db32SeatNumber=24,Db32DataDigits=10,Db32DecimalDigits=0 where ITEM_CODE='w02003';
+				update bas_indicator_info set Db32SeatNumber=25,Db32DataDigits=6,Db32DecimalDigits=2 where ITEM_CODE='w21038';
+				update bas_indicator_info set Db32SeatNumber=26,Db32DataDigits=8,Db32DecimalDigits=2 where ITEM_CODE='w21022';
+				update bas_indicator_info set Db32SeatNumber=30,Db32DataDigits=4,Db32DecimalDigits=2 where ITEM_CODE='w22001';
+				update bas_indicator_info set Db32SeatNumber=31,Db32DataDigits=4,Db32DecimalDigits=2 where ITEM_CODE='w19002';
+				update bas_indicator_info set Db32SeatNumber=32,Db32DataDigits=7,Db32DecimalDigits=3 where ITEM_CODE='w33001';
+				update bas_indicator_info set Db32SeatNumber=33,Db32DataDigits=7,Db32DecimalDigits=3 where ITEM_CODE='w33007';
+			</SQL>
+		</Item>
+		<Item>
+			<!--时间-->
+			<Date>2022-11-17</Date>
+			<!--操作人-->
+			<Operator>揭康</Operator>
+			<!--版本 保证可以转换为浮点类型-->
+			<Ver>1.4</Ver>
+			<!--描述-->
+			<Description>修改表bas_device_indicator</Description>
+			<!--执行脚本-->
+			<SQL>
+				alter table bas_device_indicator add `StatisticsFlag` int(1) DEFAULT NULL COMMENT '统计类型标记';
+			</SQL>
+		</Item>
+		<Item>
+			<!--时间-->
+			<Date>2022-11-22</Date>
+			<!--操作人-->
+			<Operator>栗海宝</Operator>
+			<!--版本 增加Modbus参数类型-->
+			<Ver>1.5</Ver>
+			<!--描述-->
+			<Description>修改表bas_upload_modbusslave_config</Description>
+			<!--执行脚本-->
+			<SQL>
+				alter table bas_upload_modbusslave_config add `ParamType` varchar(1) DEFAULT NULL COMMENT '参数类型';
+			</SQL>
+		</Item>
+		<Item>
+			<!--时间-->
+			<Date>2022-11-22</Date>
+			<!--操作人-->
+			<Operator>揭康</Operator>
+			<!--版本 增加Modbus参数类型-->
+			<Ver>1.6</Ver>
+			<!--描述-->
+			<Description>表sys_role_menu,sys_menu插入数据</Description>
+			<!--执行脚本-->
+			<SQL>
+				INSERT INTO `sys_menu` VALUES('2211221134342', '001', '001', '监控', 'MonitorClient.Views.VideoMonitorView.RealVideoMonitorView', '', '', '0', '1', '', '', '', '1', '1', '', '1', '1', '', '1');
+				INSERT INTO `sys_menu` VALUES('2211221109342', '004', '004', '监控配置', 'MonitorClient.Views.VideoMonitorView.BasCameraEditorView', '', '', '0', '1', '', '', '', '1', '1', '', '', '0', '', '1');
+				INSERT INTO `sys_role_menu` VALUES('4e2adf9b-ce30-44eb-84c6-4f3282733318', '0', '2211221134342');
+				INSERT INTO `sys_role_menu` VALUES('5204810b-0b53-4a93-a833-2d9f9138871b', '0', '2211221109342');
+			</SQL>
+		</Item>
+		<Item>
+			<!--时间-->
+			<Date>2022-11-22</Date>
+			<!--操作人-->
+			<Operator>栗海宝</Operator>
+			<!--版本 修改上传参数表，所有转换存一个表里-->
+			<Ver>1.7</Ver>
+			<!--描述-->
+			<Description>修改表bas_upload_param_convert</Description>
+			<!--执行脚本-->
+			<SQL>
+				alter table bas_upload_param_convert add `TableType` int(1) DEFAULT NULL COMMENT '1:上传平台因子状态值转换 2：参数值转换 3:Modbusslave数据转换 4：Modbusslave动作编号';
+			</SQL>
+		</Item>
+		<Item>
+			<!--时间-->
+			<Date>2022-12-05</Date>
+			<!--操作人-->
+			<Operator>栗海宝</Operator>
+			<!--版本 修改上传平台表，将上传平台的串口配置放到IP 配置表里-->
+			<Ver>1.8</Ver>
+			<!--描述-->
+			<Description>修改表bas_upload_platform</Description>
+			<!--执行脚本-->
+			<SQL>
+				alter table bas_upload_platform add(
+				`SerialPortName` varchar(32) DEFAULT NULL COMMENT '串口名',
+				`SerialPortBaudRate` int(10) DEFAULT NULL COMMENT '波特率',
+				`SerialPortDataBits` int(4) DEFAULT NULL COMMENT '数据位',
+				`SerialPortStopBits` int(4) DEFAULT NULL COMMENT '停止位',
+				`SerialPortParity` int(4) DEFAULT NULL COMMENT '校验位',
+				`SlaveId` int(4) DEFAULT NULL COMMENT 'ModbusslaveId'
+				) 
+			</SQL>
+		</Item>
+	</DBUpdate>
